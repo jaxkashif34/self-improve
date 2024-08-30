@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      "use strict";
+      const arr = [24, 56, 26, 58, 62, 72, 67, 82, 72];
+      const maxHeapify = (arr, i) => {
+        let left = i * 2 + 1;
+        let right = i * 2 + 2;
+        let largest = i;
+        if (left < arr.length && arr[largest] < arr[left]) {
+          largest = left;
+        }
+        if (right < arr.length && arr[largest] < arr[right]) {
+          largest = right;
+        }
+        if (i !== largest) {
+          [arr[largest], arr[i]] = [arr[i], arr[largest]];
+          maxHeapify(arr, largest);
+        }
+        return arr;
+      };
+      const heapify = (arr) => {
+        for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+          maxHeapify(arr, i);
+        }
+      };
+      const getLastStoneWeight = (arr) => {
+        heapify(arr);
+
+        const func = (arr) => {
+          let stoney = arr.shift();
+          let stonex = arr.shift();
+          const leftWeight = stoney - stonex;
+          if (leftWeight > 0) {
+            arr.push(leftWeight);
+            heapify(arr);
+          }
+          if (arr.length <= 1) {
+            return arr.length === 1 ? arr[0] : 0;
+          } else {
+            return func(arr);
+          }
+        };
+        return func(arr);
+      };
+      console.log(getLastStoneWeight(arr));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "learn-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "functions.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaxkashif34/learn-typescript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jaxkashif34/learn-typescript/issues"
+  },
+  "homepage": "https://github.com/jaxkashif34/learn-typescript#readme",
+  "dependencies": {
+    "@types/node-fetch": "^2.6.3",
+    "node-fetch": "^3.3.1"
+  }
+}
