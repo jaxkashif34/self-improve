@@ -1,4 +1,6 @@
 /*
+Insertion sort is very useful when we are constantly adding new elements into an array while 
+maintaining the ascending order 
 Pattern: I noticed the pattern in that while loop is we are just comparing the current number
 with the jth-index number if it's (jth-index number) is bigger then move the that (jth-index number)
 to the next

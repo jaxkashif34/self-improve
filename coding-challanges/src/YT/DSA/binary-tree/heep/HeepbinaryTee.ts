@@ -599,9 +599,15 @@ class MaxSlidingWindow {
 
       /* If the current index is greater than or equal to k - 1, it means we have a valid window
       same condition as cleanHeap while loop condition but reverse
-       (i >= k - 1) is used to determine when the sliding window of size k has fully formed or not
-       if not then don't pick the element if completely formed then start pushing the element into 
-       the result
+      (i >= k - 1) is used to determine when the sliding window of size k has fully formed or not
+      if not then don't pick the element if completely formed then start pushing the element into 
+      the result
+      Q) why we are taking k - 1 and not k only because technically we'll start pushing numbers 
+      into result array if window is equal or greater then k?
+      because we are taking 0 base indexing
+      To form a complete window of size k, you need to include k elements.
+      In a zero-indexed array, the first window that includes exactly k elements starts from index 0 and 
+      ends at index k-1.
       */
       if (i >= k - 1) {
         // The root of the heap (heap[0][0]) is the maximum element for the current window
@@ -615,10 +621,190 @@ class MaxSlidingWindow {
 }
 
 // Example usage:
-const nums = [1, 3, -1, -3, 5, 3, 6, 7]; // The input array of numbers
-const k = 3; // The size of the sliding window
 const maxSlidingWindow = new MaxSlidingWindow(); // Create an instance of the MaxSlidingWindow class
-const result = maxSlidingWindow.maxSlidingWindow(nums, k); // Call the maxSlidingWindow method
+const result = maxSlidingWindow.maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3); // Call the maxSlidingWindow method
 console.log(result); // Output: [3, 3, 5, 5, 6, 7]
+
+// Merge K sorted lists | Leetcode #23
+// Video source : https://youtu.be/kpCesr9VXDA?list=PLEJXowNB4kPyP2PdMhOUlTY6GrRIITx28
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val?: number, next?: ListNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.next = next === undefined ? null : next;
+  }
+}
+
+class MinHeap {
+  private heap: ListNode[];
+
+  constructor() {
+    // Initialize an empty array to represent the heap
+    this.heap = [];
+  }
+
+  // Push a new node into the heap and maintain the min-heap property
+  push(node: ListNode): void {
+    this.heap.push(node); // Add the new node to the end of the array
+    this.heapifyUp(this.heap.length - 1); // Rebalance the heap by moving the node up
+  }
+
+  // Pop the smallest node from the heap (the root) and maintain the min-heap property
+  pop(): ListNode | undefined {
+    if (this.heap.length === 0) return undefined; // Return undefined if the heap is empty
+
+    const smallest = this.heap[0]; // The root node is the smallest in the min-heap
+    const last = this.heap.pop(); // Remove the last node in the heap
+
+    if (this.heap.length > 0 && last !== undefined) {
+      this.heap[0] = last; // Move the last node to the root position
+      this.heapifyDown(0); // Rebalance the heap by moving the node down
+    }
+
+    return smallest; // Return the smallest node (which was at the root)
+  }
+
+  // Heapify up: Rebalance the heap by moving a node up to maintain the min-heap property
+  private heapifyUp(index: number): void {
+    let i = index;
+
+    while (i > 0) {
+      const parentIndex = Math.floor((i - 1) / 2); // Calculate the parent's index
+
+      // If the current node is not smaller than its parent, stop
+      if (this.heap[parentIndex].val <= this.heap[i].val) break;
+
+      // Swap the current node with its parent
+      [this.heap[i], this.heap[parentIndex]] = [
+        this.heap[parentIndex],
+        this.heap[i],
+      ];
+
+      // Move up to the parent index
+      i = parentIndex;
+    }
+  }
+
+  // Heapify down: Rebalance the heap by moving a node down to maintain the min-heap property
+  private heapifyDown(index: number): void {
+    let i = index;
+    const length = this.heap.length;
+
+    while (true) {
+      const leftIndex = 2 * i + 1; // Left child index
+      const rightIndex = 2 * i + 2; // Right child index
+      let smallest = i; // Assume the current node is the smallest
+
+      // If the left child exists and is smaller than the current node, update smallest
+      if (
+        leftIndex < length &&
+        this.heap[leftIndex].val < this.heap[smallest].val
+      ) {
+        smallest = leftIndex;
+      }
+
+      // If the right child exists and is smaller than the smallest found so far, update smallest
+      if (
+        rightIndex < length &&
+        this.heap[rightIndex].val < this.heap[smallest].val
+      ) {
+        smallest = rightIndex;
+      }
+
+      // If no smaller child was found, the heap property is restored, and we can stop
+      if (smallest === i) break;
+
+      // Swap the current node with the smallest child
+      [this.heap[i], this.heap[smallest]] = [this.heap[smallest], this.heap[i]];
+
+      // Move down to the smallest child's index
+      i = smallest;
+    }
+  }
+
+  // Check if the heap is empty
+  isEmpty(): boolean {
+    return this.heap.length === 0; // Return true if the heap is empty, otherwise false
+  }
+}
+
+function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
+  // Initialize the min-heap to keep track of the smallest elements across the lists
+  const minHeap = new MinHeap();
+
+  // Create a dummy node to help easily return the head of the merged list
+  const dummy = new ListNode(0);
+  let current = dummy; // Pointer to build the merged list
+
+  // Step 2: Push the first elements of all the k lists into the heap
+  for (const list of lists) {
+    if (list !== null) {
+      minHeap.push(list); // Add the first node of each list to the heap
+    }
+  }
+
+  // Step 3 & 4: Continuously pop the smallest element from the heap and add it to the merged list
+  while (!minHeap.isEmpty()) {
+    const smallestNode = minHeap.pop(); // Pop the smallest node from the heap
+
+    if (smallestNode) {
+      current.next = smallestNode; // Add the smallest node to the merged list
+      current = current.next; // Move the current pointer to the new end of the list
+
+      // first we will push all the nodes of the first (smallestNode) list nodes 
+      // then will push the all node of second list and then 3rd and so on
+      if (smallestNode.next !== null) {
+        // If the smallest node's list has more elements, push the next one into the heap
+        minHeap.push(smallestNode.next);
+      }
+    }
+  }
+
+  // Return the merged list, which starts at dummy.next
+  return dummy.next;
+}
+
+// Example usage:
+const list1 = new ListNode(1, new ListNode(4, new ListNode(5)));
+const list2 = new ListNode(1, new ListNode(3, new ListNode(4)));
+const list3 = new ListNode(2, new ListNode(6));
+const lists = [list1, list2, list3];
+
+const mergedList = mergeKLists(lists);
+
+// Function to print the merged list
+function printList(node: ListNode | null): void {
+  let output = ""; // Initialize an empty string to accumulate the output
+  while (node !== null) {
+    output += `${node.val} -> `; // Append the current node's value to the output string
+    node = node.next; // Move to the next node
+  }
+  output += "null"; // Indicate the end of the list
+  console.log(output); // Print the entire accumulated string at once
+}
+
+printList(mergedList); // Output: 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6 -> null
+
+
+
+
+/* ############ Find Median from Data Stream ############
+
+For an array with an odd number of elements:
+
+                 (n - 1)
+Median =  ------------------------ 
+                   2 
+For an array with an even number of elements:
+
+          (  n       )      n
+          ( ---  - 1 )  +   ------
+          (  2       )       2
+Median = ----------------------------
+                      2
+*/
+
 
 export {};
