@@ -37,6 +37,10 @@ right-child -> 2 * i + 2
 given child index want to find parent index
 then -> floor((i - 1) / 2) i is the index
 
+if we have an array then we can easily get all internal nodes and all leaf nodes
+    internal nodes = 0 to (floor(n/2) - 1)
+    leaf nodes = floor(n/2) to n - 1
+
 const treeArray = [1, 2, 3, 4, 5, 6, 7];
 
         1
@@ -115,9 +119,17 @@ class Heap {
 
   private maxHeapify(arr = this.heap): void {
     const length = this.heap.length;
-    /* we can't heapify the current element if both left and right child follow the heap 
+    /* we can't heapify the current element if both left and right child don't follow the heap 
     property and leaf nodes are the nodes that follows the heap property so we will 
-    start from upper level to the leaf node and will go all the way to the 0th index
+    start from (just aboove the leaf nodes) upper level to the leaf node and will 
+    go all the way to the 0th index
+
+    if we have an array then we can easily get all internal nodes and all leaf nodes
+    internal nodes = 0 to (floor(n/2) - 1)
+    leaf nodes = (floor(n/2)) to n - 1
+
+    we are starting the loop from the last internal node to the root node becase 
+    the last interanl node's child follow the heap property
     */
     for (let i = Math.floor(length / 2) - 1; i >= 0; i--) {
       this.maxHeapifyArrange(this.heap, i);
@@ -132,7 +144,8 @@ class Heap {
     const max = this.heap[0]; // Root of the heap is the maximum element
     const lastElement = this.heap.pop(); // Remove the last element
 
-    if (this.heap.length > 0 && lastElement !== undefined) {
+    // we have to check if where we are overrinding the index 0 ITC and last element are valid or not
+    if (this.heap.length > 0 && lastElement !== undefined) { 
       this.heap[0] = lastElement; // Move the last element to the root
       this.maxHeapifyArrange(this.heap, 0); // Restore the max heap property
     }
@@ -753,7 +766,7 @@ function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
       current.next = smallestNode; // Add the smallest node to the merged list
       current = current.next; // Move the current pointer to the new end of the list
 
-      // first we will push all the nodes of the first (smallestNode) list nodes 
+      // first we will push all the nodes of the first (smallestNode) list nodes
       // then will push the all node of second list and then 3rd and so on
       if (smallestNode.next !== null) {
         // If the smallest node's list has more elements, push the next one into the heap
@@ -787,9 +800,6 @@ function printList(node: ListNode | null): void {
 
 printList(mergedList); // Output: 1 -> 1 -> 2 -> 3 -> 4 -> 4 -> 5 -> 6 -> null
 
-
-
-
 /* ############ Find Median from Data Stream ############
 
 For an array with an odd number of elements:
@@ -805,6 +815,5 @@ For an array with an even number of elements:
 Median = ----------------------------
                       2
 */
-
 
 export {};
