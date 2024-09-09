@@ -145,7 +145,7 @@ class Heap {
     const lastElement = this.heap.pop(); // Remove the last element
 
     // we have to check if where we are overrinding the index 0 ITC and last element are valid or not
-    if (this.heap.length > 0 && lastElement !== undefined) { 
+    if (this.heap.length > 0 && lastElement !== undefined) {
       this.heap[0] = lastElement; // Move the last element to the root
       this.maxHeapifyArrange(this.heap, 0); // Restore the max heap property
     }
@@ -235,7 +235,9 @@ class Heap {
       // If there is any remaining weight, add it back to the heap
       if (leftWeight > 0) {
         arr.push(leftWeight);
-        this.maxHeapify(arr); // Re-heapify after adding the new stone
+        // we have to percolate up but here this percolate up will work on this.heap not on our array
+        this.percolateUp(arr.length - 1); 
+        // this.maxHeapify(arr); // Re-heapify after adding the new stone
       }
 
       // Base case: If only one or no stones remain, return the result

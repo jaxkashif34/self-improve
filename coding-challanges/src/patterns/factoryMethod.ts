@@ -1,3 +1,27 @@
+// ############ BAD Example ##############
+class Truck {
+  deliver() {
+    console.log("Deliver by land in a truck.");
+  }
+}
+
+class Ship {
+  deliver() {
+    console.log("Deliver by sea in a ship.");
+  }
+}
+
+class LogisticsBad {
+  createTransport(type: string) {
+    if (type === "truck") {
+      return new Truck();
+    } else if (type === "ship") {
+      return new Ship();
+    }
+  }
+}
+
+
 // Step 1: Define the product interface
 interface Transport {
   deliver(): void;
