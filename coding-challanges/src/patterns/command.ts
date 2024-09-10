@@ -146,12 +146,12 @@ class AddCommand implements Command {
 
   // Execute method, adds value to the current value
   execute(currentValue: number): number {
-    return currentValue + this.valueToAdd;
+    return this.valueToAdd + currentValue;
   }
 
   // Undo method, subtracts the added value to revert
   undo(currentValue: number): number {
-    return currentValue - this.valueToAdd;
+    return this.valueToAdd - currentValue;
   }
 }
 
@@ -165,12 +165,12 @@ class SubtractCommand implements Command {
 
   // Execute method, subtracts value from the current value
   execute(currentValue: number): number {
-    return currentValue - this.valueToSubtract;
+    return this.valueToSubtract - currentValue;
   }
 
   // Undo method, adds back the subtracted value to revert
   undo(currentValue: number): number {
-    return currentValue + this.valueToSubtract;
+    return this.valueToSubtract + currentValue;
   }
 }
 
@@ -184,12 +184,12 @@ class MultiplyCommand implements Command {
 
   // Execute method, multiplies the current value
   execute(currentValue: number): number {
-    return currentValue * this.valueToMultiply;
+    return this.valueToMultiply * currentValue;
   }
 
   // Undo method, divides the current value to revert
   undo(currentValue: number): number {
-    return currentValue / this.valueToMultiply;
+    return this.valueToMultiply / currentValue;
   }
 }
 
@@ -203,12 +203,12 @@ class DivideCommand implements Command {
 
   // Execute method, divides the current value
   execute(currentValue: number): number {
-    return currentValue / this.valueToDivide;
+    return this.valueToDivide / currentValue;
   }
 
   // Undo method, multiplies the value to revert the division
   undo(currentValue: number): number {
-    return currentValue * this.valueToDivide;
+    return this.valueToDivide * currentValue;
   }
 }
 
