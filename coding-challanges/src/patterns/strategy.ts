@@ -1,3 +1,14 @@
+/*
+The Strategy Pattern is a behavioral design pattern that defines a family  
+of algorithms, encapsulates each one, and makes them interchangeable. It  
+allows clients to select an algorithm from a family of algorithms at runtime,  
+promoting flexibility and reuse. The pattern involves creating a strategy interface  
+that each algorithm implements and a context class that uses the strategy.  
+This separation allows algorithms to vary independently from clients that use  
+them, facilitating easier maintenance and extension of the algorithm family.
+
+*/ 
+
 // Step 1: Define a common interface for payment strategies
 interface PaymentStrategy {
   pay(amount: number): void;

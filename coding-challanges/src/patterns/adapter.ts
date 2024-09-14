@@ -1,3 +1,14 @@
+/*
+The Adapter Pattern is a structural design pattern that allows incompatible 
+interfaces to work together. It acts as a bridge between two different interfaces, 
+converting the interface of a class into one that the client expects. This is 
+useful when you want to use an existing class but its interface doesn’t match what 
+your code needs. The adapter wraps the incompatible class, translating its methods 
+into those that the client can use, without modifying the original class. It helps 
+in achieving code reusability and flexibility when integrating with third-party 
+libraries or legacy systems.
+*/ 
+
 // ############### Without pattern Example ###############
 
 // Existing MediaPlayer interface, which supports only MP4 files

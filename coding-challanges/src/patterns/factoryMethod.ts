@@ -1,3 +1,15 @@
+/*
+The Factory Method Pattern is a creational design pattern that defines an  
+interface for creating objects but allows subclasses to alter the type of  
+objects that will be created. Instead of calling a constructor directly, a  
+factory method is used to create instances of a class. This pattern promotes  
+loose coupling between client code and the classes it needs to instantiate,  
+allowing for easier maintenance and extension. It provides a way to delegate  
+object creation to subclasses while ensuring that the client code remains unaware  
+of the specific classes being instantiated.
+
+*/ 
+
 // ############ BAD Example ##############
 class Truck {
   deliver() {

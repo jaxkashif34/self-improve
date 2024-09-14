@@ -1,4 +1,16 @@
 /*
+The Proxy Pattern is a structural design pattern that provides a surrogate or  
+placeholder for another object. It controls access to the original object by  
+intercepting requests and performing additional operations before or after  
+delegating them to the real object. This pattern can be used for various  
+purposes, such as controlling access, managing resources, or adding additional  
+functionality. Proxies can be categorized into different types, including  
+virtual proxies, protection proxies, and remote proxies, each serving specific  
+purposes in controlling and managing interactions with the real object.
+
+
+
+
 
 The Proxy Design Pattern is a structural design pattern that provides a surrogate or 
 placeholder for another object to control access to it. Essentially, it allows you 

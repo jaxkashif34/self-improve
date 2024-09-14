@@ -1,3 +1,13 @@
+/*
+The Command Pattern is a behavioral design pattern that encapsulates a request  
+as an object, allowing you to parameterize clients with queues and requests.  
+It also provides support for undoable operations by creating command objects  
+that implement a common interface. Each object contains logic to execute  
+a specific request, decoupling the sender from the request handler. This separation  
+allows for easier management of commands and enhances system flexibility.
+
+*/ 
+
 // ############### Without pattern Example ###############
 
 class CalculatorBad {

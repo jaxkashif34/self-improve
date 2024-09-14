@@ -1,3 +1,15 @@
+/*
+The Decorator Pattern is a structural design pattern that allows you to  
+dynamically add behavior or responsibilities to objects without modifying their  
+structure. It involves creating a set of decorator classes that are used  
+to wrap concrete components. These decorators extend the functionality of the  
+wrapped objects by adding new features or modifying existing ones, while  
+preserving the original object's interface. This pattern promotes flexibility and  
+adheres to the open/closed principle, allowing objects to be extended without  
+changing their code.
+
+*/ 
+
 // ########### BAD Example ############
 class Coffee {
   cost(): number {

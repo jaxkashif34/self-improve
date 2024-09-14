@@ -1,3 +1,14 @@
+/*
+The Abstract Factory Pattern is a creational design pattern that provides an interface 
+for creating families of related or dependent objects without specifying their concrete 
+classes. It allows you to produce objects that follow a common theme or category, but the 
+exact object type is determined at runtime by the factory implementation. This pattern 
+is particularly useful when a system needs to be independent of how its objects are created 
+or when dealing with multiple object families. By encapsulating object creation logic, the 
+Abstract Factory pattern promotes flexibility and makes it easier to introduce new product 
+families.
+*/ 
+
 // Button interface
 interface Button {
   render(): void;

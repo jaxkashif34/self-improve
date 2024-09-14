@@ -1,3 +1,14 @@
+/*
+The Facade Pattern is a structural design pattern that provides a simplified  
+interface to a complex subsystem. It involves creating a facade class that  
+delegates client requests to appropriate components of the subsystem,  
+hiding its complexity. This pattern makes it easier for clients to interact  
+with the subsystem by offering a unified and easier-to-use interface. The  
+facade class encapsulates the complexities of the subsystem and helps in  
+reducing dependencies between client code and the subsystem components.
+
+*/ 
+
 // Complex subsystem 1: TV class
 class TV {
   turnOn(): void {
