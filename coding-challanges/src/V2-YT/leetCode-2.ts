@@ -1,6 +1,6 @@
 import { LinkedList, NodeType } from "../YT/DSA/LinkedList/linkedList";
 
-export { };
+export {};
 
 /* 
 ****** Sliding Window Technique ******
@@ -201,50 +201,48 @@ insert(
 
 // Fast and slow pointer
 
-const list = new LinkedList()
-list.append(1)
-list.append(2)
-list.append(3)
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
 
 const ifCycleExistsInLinkedList = <T>(head: NodeType<T>) => {
-  if (!head) return false
-  let slow = head
-  let fast = head
+  if (!head) return false;
+  let slow = head;
+  let fast = head;
 
   while (fast && fast.next !== null) {
-    slow = slow.next!
-    fast = fast.next.next!
-    if (slow === fast) return true
+    slow = slow.next!;
+    fast = fast.next.next!;
+    if (slow === fast) return true;
   }
-  return false
+  return false;
 };
 
 ifCycleExistsInLinkedList(list.head); // false
-
 
 /* Learning Cyclic Sort 
 
 Video Explanation : https://www.youtube.com/watch?v=JfinxytTYFQ&t=68s
 if the numbers are from 1 to N and no number is missing this is the best algo for that particular case
 */
-// basic implementations 
+// basic implementations
 const cyclicSort = (arr: number[]) => {
   let p = 0;
-  while ((arr[p] - 1) !== p) {
+  while (arr[p] - 1 !== p) {
     let a = arr[p];
-    let b = arr[a - 1]
+    let b = arr[a - 1];
 
-    arr[a - 1] = a
-    arr[p] = b
-    if ((arr[p] - 1) === p) {
+    arr[a - 1] = a;
+    arr[p] = b;
+    if (arr[p] - 1 === p) {
       p += 1;
     }
   }
   return arr;
 };
 
-cyclicSort([3, 5, 2, 1, 4])
-
+cyclicSort([3, 5, 2, 1, 4]);
 
 // Q) 33. Search in Rotated Sorted Array
 
@@ -282,7 +280,79 @@ const search = (arr: number[], target: number) => {
   return -1; // Target not found
 };
 
-
-const arr = [7, 8, 9, 1, 2, 3, 4, 5, 6]
-let target = 1
+const arr = [7, 8, 9, 1, 2, 3, 4, 5, 6];
+let target = 1;
 console.log(search(arr, target)); // Output should be the index of the target
+
+// Example strings to check if they are anagrams
+const s = "catc";
+const t = "tcac";
+
+/**
+ * Function to check if two strings are anagrams of each other
+ * @param t - the first string
+ * @param s - the second string
+ * @returns boolean - true if they are anagrams, false otherwise
+ */
+const validAnagram = (t: string, s: string): boolean => {
+  // Step 1: Check if the lengths of the strings are equal
+  // If lengths are not equal, they cannot be anagrams
+  if (s.length !== t.length) return false;
+
+  // Step 2: Initialize hash maps to store character frequencies for both strings
+  // hashS will store character frequency for string 's'
+  // hashT will store character frequency for string 't'
+  const hashS: Record<string, number> = {};
+  const hashT: Record<string, number> = {};
+
+  // Step 3: Iterate through each character in both strings
+  // Build frequency maps for both 's' and 't' strings simultaneously
+  for (let i = 0; i < s.length; i++) {
+    // If the character in 's' is not present in hashS, initialize it to 0 and increment
+    hashS[s[i]] = (hashS[s[i]] ?? 0) + 1;
+
+    // Similarly, for string 't', initialize and increment frequency in hashT
+    hashT[t[i]] = (hashT[t[i]] ?? 0) + 1;
+  }
+
+  // Step 4: Compare the frequency of each character in both hash maps
+  // If frequencies do not match for any character, return false
+  for (let i = 0; i < t.length; i++) {
+    // Check if the frequency of the character in 't' is the same as in 's'
+    if (hashT[t[i]] !== hashS[t[i]]) {
+      // If any character's count doesn't match between the two strings, they are not anagrams
+      return false;
+    }
+  }
+
+  // Step 5: If all character frequencies match, the strings are anagrams
+  return true;
+};
+
+// Example usage to check if the strings 't' and 's' are anagrams
+console.log(validAnagram(t, s)); // Output: true
+
+const maxSubArray = (arr: number[]): number => {
+  // Initialize maxSub to the first element as the minimum possible value
+  let maxSub = arr[0];
+  // Initialize currentSum to 0
+  let currentSum = 0;
+
+  // Iterate through each number in the array
+  for (const n of arr) {
+    // If currentSum becomes negative, reset it to 0 (we don't want negative sums)
+    if (currentSum < 0) {
+      currentSum = 0;
+    }
+
+    // Add the current number to the running sum
+    currentSum += n;
+
+    // Update the maximum subarray sum found so far
+    maxSub = Math.max(maxSub, currentSum);
+  }
+
+  return maxSub; // Return the largest sum of contiguous subarray
+};
+
+console.log(maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4])); // Output: 6 (subarray is [4, -1, 2, 1])
