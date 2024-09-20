@@ -18,39 +18,39 @@ export {};
 // Connected Graphs: Graphs that have a path between every pair of vertices
 // Disconnected Graphs: Graphs that have no path between every pair of vertices
 
-const airports = 'PHX BKK OKC JFK LAX MEX EZE HEL LOS LAP LIM'.split(' ');
+const airports = "PHX BKK OKC JFK LAX MEX EZE HEL LOS LAP LIM".split(" ");
 
 const buildGraph = {
-  i: ['j', 'k'],
-  j: ['i'],
-  k: ['i', 'm', 'l'],
-  l: ['k'],
-  m: ['k'],
-  n: ['o'],
-  o: ['n'],
+  i: ["j", "k"],
+  j: ["i"],
+  k: ["i", "m", "l"],
+  l: ["k"],
+  m: ["k"],
+  n: ["o"],
+  o: ["n"],
 };
 
 const edges = [
-  ['w', 'x'],
-  ['x', 'y'],
-  ['z', 'y'],
-  ['z', 'v'],
-  ['w', 'v'],
+  ["w", "x"],
+  ["x", "y"],
+  ["z", "y"],
+  ["z", "v"],
+  ["w", "v"],
 ];
 
 // Graph implementation
 
 const routes = [
-  ['PHX', 'LAX'],
-  ['PHX', 'JFK'],
-  ['JFK', 'OKC'],
-  ['JFK', 'HEL'],
-  ['JFK', 'LOS'],
-  ['MEX', 'LAX'],
-  ['MEX', 'BKK'],
-  ['MEX', 'LIM'],
-  ['MEX', 'EZE'],
-  ['LIM', 'BKK'],
+  ["PHX", "LAX"],
+  ["PHX", "JFK"],
+  ["JFK", "OKC"],
+  ["JFK", "HEL"],
+  ["JFK", "LOS"],
+  ["MEX", "LAX"],
+  ["MEX", "BKK"],
+  ["MEX", "LIM"],
+  ["MEX", "EZE"],
+  ["LIM", "BKK"],
 ];
 // Explanation : https://www.youtube.com/watch?v=cWNEl4HE2OE
 class Graph<T> {
@@ -105,9 +105,9 @@ class Graph<T> {
 
     while (queue.length > 0) {
       const airport = queue.shift();
-      if (!airport) return console.log('No airport found');
+      if (!airport) return console.log("No airport found");
       const destinations = this.adjacencyList.get(airport); // get all the connected edges of that airport
-      if (!destinations) return console.log('No destinations found');
+      if (!destinations) return console.log("No destinations found");
 
       for (const destination of destinations) {
         if (!visited.has(destination)) {
@@ -127,15 +127,17 @@ class Graph<T> {
       const path = queue.shift() as T[];
       const airport = path[path.length - 1];
       if (airport === destination) {
+        // we are checking if last node matches with destination
         console.log(path);
         return;
       }
-
+      // passing the last node to visit its destination
       const destinations = this.adjacencyList.get(airport);
-      if (!destinations) return console.log('No destinations found');
+      if (!destinations) return console.log("No destinations found");
 
       for (const destination of destinations) {
         if (!visited.has(destination)) {
+          // here we are making the path with every possible destination
           queue.push([...path, destination]);
         }
       }
@@ -151,10 +153,10 @@ class Graph<T> {
     visited.add(start);
 
     const destinations = this.adjacencyList.get(start);
-    if (!destinations) return console.log('No destinations found');
+    if (!destinations) return console.log("No destinations found");
 
     for (const destination of destinations) {
-      if (destination === 'BKK') {
+      if (destination === "BKK") {
         console.log(`DFS found Bangkok in ${visited.size} steps`);
         return;
       }
@@ -178,21 +180,21 @@ const graph = new Graph<string>();
 
 (() => {
   const graphItem = {
-    a: ['b', 'c'],
-    b: ['d'],
-    c: ['e'],
-    d: ['f'],
+    a: ["b", "c"],
+    b: ["d"],
+    c: ["e"],
+    d: ["f"],
     e: [],
     f: [],
   };
 
   const gridILandCount = [
-    ['W', 'L', 'W', 'W', 'L'],
-    ['W', 'L', 'W', 'W', 'W'],
-    ['W', 'W', 'W', 'L', 'W'],
-    ['W', 'W', 'L', 'L', 'W'],
-    ['L', 'W', 'W', 'L', 'L'],
-    ['L', 'L', 'W', 'W', 'W'],
+    ["W", "L", "W", "W", "L"],
+    ["W", "L", "W", "W", "W"],
+    ["W", "W", "W", "L", "W"],
+    ["W", "W", "L", "L", "W"],
+    ["L", "W", "W", "L", "L"],
+    ["L", "L", "W", "W", "W"],
   ];
 
   type GraphItemKeys = keyof typeof graphItem;
@@ -420,8 +422,11 @@ const graph = new Graph<string>();
 
       for (let row = 0; row < grid.length; row++) {
         for (let col = 0; col < grid[row].length; col++) {
-          if (grid[row][col] === 'L' && !visited.has(`${row}-${col}`)) {
-            // using row-col because imagine we first have row 12 and col 4 and then we have row 1 and col 24, so if we use row and col together (124 and 124) then it will be same for both but if we use row-col then it will be different
+          if (grid[row][col] === "L" && !visited.has(`${row}-${col}`)) {
+            /* using row-col because imagine we first have row 12 and col 4 and 
+            then we have row 1 and col 24, so if we use row and col together 
+            (124 and 124) then it will be same for both but if we use row-col 
+            then it will be different */
             this.exploreIsland(grid, row, col, visited);
             count++;
           }
@@ -440,7 +445,7 @@ const graph = new Graph<string>();
       const colInBounds = 0 <= col && col < grid[0].length; // first row length others are same
 
       if (!rowInBounds || !colInBounds) return;
-      if (grid[row][col] === 'W') return;
+      if (grid[row][col] === "W") return;
       if (visited.has(`${row}-${col}`)) return;
 
       visited.add(`${row}-${col}`);
@@ -457,7 +462,7 @@ const graph = new Graph<string>();
 
       for (let row = 0; row < grid.length; row++) {
         for (let col = 0; col < grid[row].length; col++) {
-          if (grid[row][col] === 'L' && !visited.has(`${row}-${col}`)) {
+          if (grid[row][col] === "L" && !visited.has(`${row}-${col}`)) {
             const size = this.exploreIslandSize(grid, row, col, visited);
             if (size < min) min = size;
           }
@@ -476,7 +481,7 @@ const graph = new Graph<string>();
       const colInBounds = 0 <= col && col < grid[0].length;
 
       if (!rowInBounds || !colInBounds) return 0;
-      if (grid[row][col] === 'W') return 0;
+      if (grid[row][col] === "W") return 0;
       if (visited.has(`${row}-${col}`)) return 0;
 
       visited.add(`${row}-${col}`);
@@ -494,14 +499,14 @@ const graph = new Graph<string>();
 
   const graph = new Graph();
   const adjacencyGraph = {
-    '3': [],
-    '4': ['6'],
-    '6': ['4', '5', '7', '8'],
-    '8': ['6'],
-    '7': ['6'],
-    '5': ['6'],
-    '1': ['2'],
-    '2': ['1'],
+    "3": [],
+    "4": ["6"],
+    "6": ["4", "5", "7", "8"],
+    "8": ["6"],
+    "7": ["6"],
+    "5": ["6"],
+    "1": ["2"],
+    "2": ["1"],
   };
   // console.log(graph.edgesIntoAdjacencyList(edges));
 
