@@ -658,5 +658,176 @@ function replaceElements(arr: number[]): number[] {
   return arr;
 }
 
+replaceElements([17, 18, 5, 4, 6, 1]); // [18,6,6,6,1,-1]
 
-replaceElements([17,18,5,4,6,1]) // [18,6,6,6,1,-1]
+function mergeTrees(
+  root1: TreeNode | null,
+  root2: TreeNode | null
+): TreeNode | null {
+  // If both trees are empty, return null as there's nothing to merge
+  if (!root1 && !root2) {
+    return null;
+  }
+
+  // If one of the trees is empty, return the non-empty tree
+  if (!root1) {
+    return root2; // If root1 is null, we return root2 (no merge needed for null tree)
+  }
+
+  if (!root2) {
+    return root1; // If root2 is null, we return root1
+  }
+
+  // Add the values of the two root nodes
+  const mergedValue = (root1 ? root1.val : 0) + (root2 ? root2.val : 0);
+  const newRoot = new TreeNode(mergedValue); // Create a new node with the merged value
+
+  // Recursively merge the left and right subtrees
+  // Pass the left children of both trees to merge the left subtree
+  newRoot.left = mergeTrees(root1.left, root2.left);
+
+  // Pass the right children of both trees to merge the right subtree
+  newRoot.right = mergeTrees(root1.right, root2.right);
+
+  // Return the new merged tree's root node
+  return newRoot;
+}
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number;
+ *     left: TreeNode | null;
+ *     right: TreeNode | null;
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val === undefined ? 0 : val);
+ *         this.left = (left === undefined ? null : left);
+ *         this.right = (right === undefined ? null : right);
+ *     }
+ * }
+ */
+
+/**
+ * This function finds the lowest common ancestor (LCA) of two given nodes `p` and `q`
+ * in a Binary Search Tree (BST). In a BST, the LCA of two nodes is defined as the
+ * deepest node that is an ancestor of both `p` and `q`.
+ *
+ * @param root - The root node of the BST.
+ * @param p - The first node for which we want to find the LCA.
+ * @param q - The second node for which we want to find the LCA.
+ * @returns The LCA node of `p` and `q`, or `null` if not found.
+ */
+function lowestCommonAncestor(
+  root: TreeNode | null,
+  p: TreeNode | null,
+  q: TreeNode | null
+): TreeNode | null {
+  // Base case: If the root is null, there's no tree to traverse, return null.
+  if (!root) return null;
+
+  // If the root matches either `p` or `q`, we have found one of the target nodes.
+  // Therefore, root is the LCA.
+  if (root.val === p?.val || root.val === q?.val) return root;
+
+  // If both `p` and `q` values are less than the current node's value,
+  // that means both nodes are located in the left subtree.
+  if (p!.val < root.val && q!.val < root.val) {
+    return lowestCommonAncestor(root.left, p, q);
+  }
+
+  // If both `p` and `q` values are greater than the current node's value,
+  // both nodes are located in the right subtree.
+  if (p!.val > root.val && q!.val > root.val) {
+    return lowestCommonAncestor(root.right, p, q);
+  }
+
+  // If one node is smaller and the other node is larger than the current node's value,
+  // it means this node is the split point, and hence it is the LCA.
+  return root;
+}
+
+/* In base 10, taking the modulus of a number with 10 (number % 10) 
+will give you the last digit of that number. This works because:
+
+When you divide a number by 10, the remainder is what is left after 
+subtracting as many multiples of 10 as possible.
+
+Since each place value in base 10 represents powers of 10, the last 
+digit is effectively what's "left over" after dividing by 10.
+
+
+Example:
+  For 1234:
+    1234 % 10 = 4 (The last digit is 4)
+  For 567:
+    567 % 10 = 7 (The last digit is 7)
+
+This technique is generally applicable to numbers in any base, where 
+you take the modulus with the base to get the last digit. For example, 
+for a number in base 8, you would take number % 8 to get the last digit.
+*/
+
+/*
+Yes, dividing a number by 10 repeatedly (in base 10) will eventually 
+give you the first digit of the number, but you have to continue 
+dividing until all other digits are removed.
+*/
+
+/**
+ * This function determines if a number is a happy number.
+ *
+ * A happy number eventually reaches 1 after a process of replacing
+ * the number by the sum of the squares of its digits.
+ *
+ * If the number ends in a cycle (not including 1), it is not a happy number.
+ *
+ * @param n - The number to check.
+ * @returns true if the number is a happy number, otherwise false.
+ */
+function isHappy(n: number): boolean {
+  // Create a Set to store numbers we've seen to detect cycles.
+  const seenNumbers = new Set<number>();
+
+  // Helper function to calculate the sum of the squares of the digits.
+  const sumOfSquares = (num: number): number => {
+    let sum = 0;
+    while (num > 0) {
+      const digit = num % 10; // Get the last digit.
+      sum += digit * digit; // Add the square of the digit to the sum.
+      num = Math.floor(num / 10); // Remove the last digit.
+    }
+    return sum;
+  };
+
+  // Continue the process until we either find `1` or detect a cycle.
+  while (n !== 1) {
+    if (seenNumbers.has(n)) {
+      // If we've seen this number before, there's a cycle, return false.
+      return false;
+    }
+
+    // Add the current number to the set of seen numbers.
+    seenNumbers.add(n);
+
+    // Replace the number with the sum of the squares of its digits.
+    n = sumOfSquares(n);
+  }
+
+  // If we exit the loop with `n === 1`, the number is happy.
+  return true;
+}
+
+// Example usage:
+console.log(isHappy(19)); // true (19 is a happy number)
+console.log(isHappy(2)); // false (2 is not a happy number)
+
+function getFirstDigit(num: number): number {
+  // Remove digits by repeatedly dividing by 10
+  while (num >= 10) {
+    num = Math.floor(num / 10);
+  }
+  return num; // At this point, num is the first digit
+}
+
+console.log(getFirstDigit(1234)); // Output: 1
+console.log(getFirstDigit(56789)); // Output: 5
