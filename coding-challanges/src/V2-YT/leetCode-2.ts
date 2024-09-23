@@ -231,7 +231,7 @@ const cyclicSort = (arr: number[]) => {
   let p = 0;
   while (arr[p] - 1 !== p) {
     let a = arr[p];
-    let b = arr[a - 1];
+    let b = arr[a - 1]; // number to be replaced at current position (p)
 
     arr[a - 1] = a;
     arr[p] = b;
@@ -382,8 +382,10 @@ hold the maximum possible profit.
     const current = Math.max(prev1, prev2 + money);
 
     // Update prev2 and prev1 for the next iteration
-    prev2 = prev1;
-    prev1 = current;
+    prev2 = prev1; // on next iteration prev1 will be prev2 because we are moving forward
+    /* and after done with current house we'll update prev1 because in next 
+    iteration this will indicate the previous adjacent house */
+    prev1 = current; 
   }
 
   // After the loop, prev1 will hold the maximum profit we can rob
