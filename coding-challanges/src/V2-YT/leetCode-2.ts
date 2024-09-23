@@ -385,7 +385,7 @@ hold the maximum possible profit.
     prev2 = prev1; // on next iteration prev1 will be prev2 because we are moving forward
     /* and after done with current house we'll update prev1 because in next 
     iteration this will indicate the previous adjacent house */
-    prev1 = current; 
+    prev1 = current;
   }
 
   // After the loop, prev1 will hold the maximum profit we can rob
@@ -833,3 +833,271 @@ function getFirstDigit(num: number): number {
 
 console.log(getFirstDigit(1234)); // Output: 1
 console.log(getFirstDigit(56789)); // Output: 5
+
+function getLastDigit(num: number): number {
+  return num % 10;
+}
+
+console.log(getLastDigit(1234)); // Output: 4
+console.log(getLastDigit(56789)); // Output: 9
+
+class Node {
+  val: number;
+  min: number;
+  next: Node | null;
+
+  constructor(val: number, min: number, next: Node | null) {
+    this.val = val;
+    this.min = min;
+    this.next = next;
+  }
+}
+
+/* This approach stores the minimum value up to and including the current node. 
+(current and after that node) */
+class MinStackBest {
+  private head: Node | null = null;
+
+  /**
+   * Pushes a value onto the stack.
+   * @param x - The value to push.
+   */
+  push(x: number): void {
+    if (this.head === null) {
+      this.head = new Node(x, x, null);
+    } else {
+      const newMin = Math.min(x, this.head.min);
+      this.head = new Node(x, newMin, this.head);
+    }
+  }
+
+  /**
+   * Pops the top value from the stack.
+   */
+  pop(): void {
+    if (this.head !== null) {
+      this.head = this.head.next;
+    }
+  }
+
+  /**
+   * Returns the top value of the stack without removing it.
+   * @returns The top value.
+   */
+  top(): number {
+    if (this.head !== null) {
+      return this.head.val;
+    }
+    throw new Error("Stack is empty");
+  }
+
+  /**
+   * Retrieves the minimum value in the stack.
+   * @returns The minimum value.
+   */
+  getMin(): number {
+    if (this.head !== null) {
+      return this.head.min;
+    }
+    throw new Error("Stack is empty");
+  }
+}
+
+// Example usage:
+const minStack = new MinStackBest();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+console.log(minStack.getMin()); // Output: -3
+minStack.pop();
+console.log(minStack.top()); // Output: 0
+console.log(minStack.getMin()); // Output: -2
+
+class MinStack {
+  private stack: number[];
+  private minStack: number[];
+
+  constructor() {
+    // Main stack to store all the elements.
+    this.stack = [];
+    // Min stack to store the minimum element at each stage.
+    this.minStack = [];
+  }
+
+  /**
+   * Push a value onto the stack.
+   * If the value is less than or equal to the current minimum,
+   * also push it onto the minStack.
+   * @param val - The value to be pushed.
+   */
+  push(val: number): void {
+    // Push the value to the main stack.
+    this.stack.push(val);
+
+    // If the minStack is empty or the new value is <= current min, push it to the minStack.
+    if (
+      this.minStack.length === 0 ||
+      val <= this.minStack[this.minStack.length - 1]
+    ) {
+      this.minStack.push(val);
+    }
+  }
+
+  /**
+   * Removes the element on the top of the stack.
+   * If the popped element is the minimum, also pop from the minStack.
+   */
+  pop(): void {
+    // Pop the top element from the main stack.
+    const poppedElement = this.stack.pop();
+
+    // If the popped element is the same as the top of the minStack, pop it from the minStack.
+    if (poppedElement === this.minStack[this.minStack.length - 1]) {
+      this.minStack.pop();
+    }
+  }
+
+  /**
+   * Gets the top element of the stack without removing it.
+   * @returns The top element of the stack.
+   */
+  top(): number {
+    // Return the top element of the main stack.
+    return this.stack[this.stack.length - 1];
+  }
+
+  /**
+   * Retrieves the minimum element from the stack in constant time.
+   * @returns The minimum element of the stack.
+   */
+  getMin(): number {
+    // Return the top element of the minStack, which is the current minimum.
+    return this.minStack[this.minStack.length - 1];
+  }
+}
+
+function removeElementsBad(
+  head: ListNode | null,
+  val: number
+): ListNode | null {
+  let current = head;
+  while (current && current.next !== null) {
+    if (current.next.val === val) {
+      current.next = current.next.next;
+    } else {
+      current = current.next;
+    }
+  }
+
+  /* this works according to the leetcode but this is not a good approach 
+  because in while loop we are checking if next exists then we are only 
+  checking but in cases if we want to remove the head then we have to 
+  get help like these kind of condition which is not quite good looking 
+  or it may throw error in some cases for to handle these kind of cases 
+  we use dummy node because in dummy node approach we have one extra 
+  node only for handling these kind of cases (done in lower example)
+  */
+  if (current && current.val === val) {
+    head = current.next;
+  }
+  return head;
+}
+
+// works with above code but have to get help extra condition
+removeElementsBad(
+  new ListNode(1, new ListNode(1, new ListNode(1, new ListNode(1)))),
+  1
+);
+
+function removeElements(head: ListNode | null, val: number): ListNode | null {
+  // Create a dummy node to handle cases where head needs to be removed
+  const dummy = new ListNode(0, head);
+  let current = dummy;
+
+  // Traverse through the list
+  while (current && current.next !== null) {
+    if (current.next.val === val) {
+      // Remove the node by skipping the current.next
+      current.next = current.next.next;
+    } else {
+      // Move to the next node if no match
+      current = current.next;
+    }
+  }
+
+  // Return the new head, which is dummy.next
+  return dummy.next;
+}
+
+removeElements(
+  new ListNode(
+    1,
+    new ListNode(
+      2,
+      new ListNode(
+        6,
+        new ListNode(3, new ListNode(4, new ListNode(5, new ListNode(6))))
+      )
+    )
+  ),
+  6
+);
+
+function searchInsert(nums: number[], target: number): number {
+  // Handle the case where the array contains only one element
+  if (nums.length === 1) {
+    // If the target is less than or equal to the only element, return 0 (insert at the start)
+    // Otherwise, return 1 (insert at the end)
+    return target <= nums[0] ? 0 : 1;
+  }
+
+  // Binary search approach for sorted arrays
+  let left = 0;
+  let right = nums.length - 1;
+
+  // Continue the search while left <= right (inclusive)
+  while (left <= right) {
+    const middle = Math.floor((left + right) / 2);
+
+    if (nums[middle] === target) {
+      // If the target is found, return its index
+      return middle;
+    } else if (target > nums[middle]) {
+      // If the target is greater, move the left pointer to the right of middle
+      left = middle + 1;
+    } else {
+      // If the target is smaller, move the right pointer to the left of middle
+      right = middle - 1;
+    }
+  }
+
+  // If we exit the loop, the target was not found. The correct insert position is the left pointer.
+  // It gives the index where the target would be inserted to maintain the sorted order.
+  return left;
+}
+
+searchInsert([1, 3, 5, 6], 5); // 2
+searchInsert([1, 3, 5, 6], 2); // 1
+searchInsert([1, 3, 5, 6], 0); // 0
+
+function removeDuplicates(nums: number[]): number {
+  // If the array has 0 or 1 elements, it's already unique
+  if (nums.length === 0) return 0;
+
+  // Initialize a pointer for the position of the next unique element
+  let i = 0;
+
+  // Iterate through the array using a second pointer j
+  for (let j = 1; j < nums.length; j++) {
+    // If the current element is different from the last unique element
+    if (nums[j] !== nums[i]) {
+      // Increment i and place the new unique element at the next position
+      i++;
+      nums[i] = nums[j];
+    }
+  }
+
+  // The number of unique elements is i + 1 (since i is 0-based)
+  return i + 1;
+}
+console.log(removeDuplicates([1, 1, 2, 2, 3, 4, 4, 5])); // Output: 5  [1, 2, 3, 4, 5, ..., ...]
