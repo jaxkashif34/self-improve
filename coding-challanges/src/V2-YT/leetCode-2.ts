@@ -934,7 +934,11 @@ class MinStack {
     // Push the value to the main stack.
     this.stack.push(val);
 
-    // If the minStack is empty or the new value is <= current min, push it to the minStack.
+    /* If the minStack is empty or the new value is <= current min, push it to the minStack.
+    * Note: In first condition we are making sure that there must be at least one element in 
+      the minStack (so that we can compare it in the next condition or if we have only one element
+      then by definition it is also the min so we'll push it to the minStack)
+    */
     if (
       this.minStack.length === 0 ||
       val <= this.minStack[this.minStack.length - 1]
