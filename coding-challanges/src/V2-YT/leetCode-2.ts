@@ -1101,3 +1101,58 @@ function removeDuplicates(nums: number[]): number {
   return i + 1;
 }
 console.log(removeDuplicates([1, 1, 2, 2, 3, 4, 4, 5])); // Output: 5  [1, 2, 3, 4, 5, ..., ...]
+
+/*
+Prime factors are the building blocks of a number. They are the prime 
+numbers (numbers that can only be divided by 1 and themselves) that 
+multiply together to create the original number.
+
+For example:
+
+The prime factors of 12 are 2 and 3 because 2 × 2 × 3 = 12.
+In simple terms, prime factors are the smallest numbers that, when 
+multiplied, make up your number.
+*/
+
+/**
+ * Function to determine if a number is an "ugly" number.
+ * Ugly numbers are positive numbers whose prime factors are limited to 2, 3, and 5.
+ *
+ * @param {number} n - The number to be checked if it's ugly.
+ * @returns {boolean} - Returns `true` if the number is ugly, otherwise `false`.
+ */
+function isUgly(n: number): boolean {
+  // Step 1: Check if the number is non-positive (0 or negative numbers)
+  // Ugly numbers are defined to be positive, so return false if n <= 0
+  if (n <= 0) return false;
+
+  // Step 2: Continuously divide the number by 2, 3, or 5 if divisible by any of these
+  // The loop will terminate when n becomes 1 or is no longer divisible by 2, 3, or 5
+  while (n > 1) {
+    if (n % 2 === 0) {
+      // If n is divisible by 2, divide it by 2
+      n = n / 2;
+    } else if (n % 3 === 0) {
+      // If n is divisible by 3, divide it by 3
+      n = n / 3;
+    } else if (n % 5 === 0) {
+      // If n is divisible by 5, divide it by 5
+      n = n / 5;
+    } else {
+      // If n is not divisible by 2, 3, or 5, it's not an ugly number
+      return false;
+    }
+  }
+
+  // Step 3: If the loop finishes and n equals 1, return true (it's an ugly number)
+  // If n is reduced to 1, it means the original n was only divisible by 2, 3, or 5
+  return n === 1;
+}
+
+isUgly(20)
+// 20 -> 2 * 10
+/* 10 -> 2 * 5 prime factors are (2, 2, 5) since the factors are in 
+provided question so 2, 2, 5 so the number is ugly
+*/
+isUgly(14)
+isUgly(6)
