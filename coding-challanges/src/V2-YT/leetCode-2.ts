@@ -1153,10 +1153,221 @@ function isUgly(n: number): boolean {
   return n === 1;
 }
 
-isUgly(20)
+isUgly(20);
 // 20 -> 2 * 10
 /* 10 -> 2 * 5 prime factors are (2, 2, 5) since the factors are in 
 provided question so 2, 2, 5 so the number is ugly
 */
-isUgly(14)
-isUgly(6)
+isUgly(14);
+isUgly(6);
+
+function lengthOfLastWord(s: string): number {
+  let length = 0; // Variable to store the length of the last word
+  let i = s.length - 1; // Start from the end of the string
+
+  // Step 1: Skip any trailing spaces
+  while (i >= 0 && s[i] === " ") {
+    i--;
+  }
+
+  // Step 2: Count the length of the last word
+  while (i >= 0 && s[i] !== " ") {
+    length++;
+    i--;
+  }
+
+  return length;
+}
+
+// Example Usage:
+console.log(lengthOfLastWord("Hello World")); // Output: 5
+console.log(lengthOfLastWord("   fly me   to   the moon  ")); // Output: 4
+console.log(lengthOfLastWord("luffy is still joyboy")); // Output: 6
+
+
+/**
+ * Removes all instances of `val` from the array `nums` and returns the new length.
+ * 
+ * This function modifies the array in-place by shifting non-val elements towards the beginning of the array.
+ * The order of the remaining elements can be changed, and elements beyond the new length are irrelevant.
+ * 
+ * @param {number[]} nums - Array of numbers from which `val` needs to be removed.
+ * @param {number} val - The value to be removed from the array.
+ * @returns {number} - The new length of the array after removing all occurrences of `val`.
+ */
+function removeElement(nums: number[], val: number): number {
+  // `i` represents the position where the next non-val element should be placed.
+  let i = 0;
+
+  // Iterate through each element of the array with index `j`.
+  for (let j = 0; j < nums.length; j++) {
+      // If the current element is not equal to `val`, it should be kept.
+      if (nums[j] !== val) {
+          // Place the current non-val element at the `i` position.
+          nums[i] = nums[j];
+
+          // Increment `i` to prepare for the next non-val element.
+          i++;
+      }
+
+      // If the element is equal to `val`, it is skipped and not placed in the array.
+  }
+
+  // At the end of the loop, `i` will be the new length of the array without `val` elements.
+  return i;
+}
+
+// Example Usage:
+let len1 = removeElement([3, 2, 2, 3], 3);
+console.log(`New length after removal: ${len1}`); // Output: 2
+console.log(`Modified array: ${[3, 2, 2, 3].slice(0, len1)}`); // Output: [2, 2]
+
+let nums2 = [0, 1, 2, 2, 3, 0, 4, 2];
+let len2 = removeElement(nums2, 2);
+console.log(`New length after removal: ${len2}`); // Output: 5
+console.log(`Modified array: ${nums2.slice(0, len2)}`); // Output: [0, 1, 3, 0, 4]
+
+
+/**
+ * Counts the number of unique email addresses after normalizing them.
+ * 
+ * Normalization steps:
+ * 1. Any portion of the email local name after the '+' sign is ignored.
+ * 2. Periods ('.') in the local name are ignored.
+ * 3. The domain name remains unchanged.
+ * 
+ * For example, "test.email+alex@leetcode.com" and "testemail@leetcode.com"
+ * will be considered the same unique email.
+ * 
+ * @param {string[]} emails - An array of email addresses.
+ * @returns {number} - The count of unique email addresses after normalization.
+ */
+function numUniqueEmails(emails: string[]): number {
+  const uniqueEmails = new Set<string>(); // A set to store unique email addresses
+
+  // Loop through each email in the input array
+  for (const email of emails) {
+      // Step 1: Split the email into local and domain parts based on '@'
+      let [local, domain] = email.split("@");
+
+      // Step 2: Ignore everything after the '+' in the local part
+      local = local.split("+")[0];
+
+      // Step 3: Remove all periods ('.') from the local part
+      local = local.replace(/\./g, "");
+
+      // Step 4: Reconstruct the email as "local@domain" and add it to the set
+      uniqueEmails.add(`${local}@${domain}`);
+  }
+
+  // The size of the set represents the number of unique email addresses
+  return uniqueEmails.size;
+}
+
+// Example Usage:
+const emails1 = [
+  "test.email+alex@leetcode.com",
+  "test.e.mail+bob.cathy@leetcode.com",
+  "testemail+david@lee.tcode.com"
+];
+
+const emails2 = [
+  "a@leetcode.com",
+  "b@leetcode.com",
+  "c@leetcode.com"
+];
+
+console.log(numUniqueEmails(emails1)); // Output: 2
+console.log(numUniqueEmails(emails2)); // Output: 3
+
+
+/**
+ * Brute force solution to calculate the minimum cost to reach the top.
+ * 
+ * @param cost - Array of costs for each step.
+ * @returns {number} - Minimum cost to reach the top.
+ */
+function minCostClimbingStairsBrute(cost: number[]): number {
+  const n = cost.length;
+
+  // Helper function to recursively calculate the cost to reach step i
+  function findMinCost(i: number): number {
+      // Base cases: if i is beyond or at the last step
+      if (i >= n) return 0;
+
+      // Recursive calculation for the cost of reaching step i
+      return cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
+  }
+
+  // You can either start from step 0 or step 1
+  return Math.min(findMinCost(0), findMinCost(1));
+}
+
+// Example usage:
+const costBrute = [10, 15, 20];
+console.log(minCostClimbingStairsBrute(costBrute)); // Output: 15
+
+
+/**
+ * Memoization solution to calculate the minimum cost to reach the top.
+ * 
+ * @param cost - Array of costs for each step.
+ * @returns {number} - Minimum cost to reach the top.
+ */
+function minCostClimbingStairsMemo(cost: number[]): number {
+  const n = cost.length;
+  const memo: number[] = new Array(n).fill(-1); // To store already computed costs
+
+  // Helper function to calculate the cost of reaching step i
+  function findMinCost(i: number): number {
+      // Base case: If we are at or beyond the last step
+      if (i >= n) return 0;
+
+      // If the result is already computed, return it
+      if (memo[i] !== -1) return memo[i];
+
+      // Recursive computation and store the result in memo array
+      memo[i] = cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
+      return memo[i];
+  }
+
+  // Start from either step 0 or step 1
+  return Math.min(findMinCost(0), findMinCost(1));
+}
+
+// Example usage:
+const costMemo = [10, 15, 20];
+console.log(minCostClimbingStairsMemo(costMemo)); // Output: 15
+
+
+/**
+ * Dynamic programming solution to calculate the minimum cost to reach the top.
+ * 
+ * @param cost - Array of costs for each step.
+ * @returns {number} - Minimum cost to reach the top.
+ */
+function minCostClimbingStairsDP(cost: number[]): number {
+  const n = cost.length;
+  const dp: number[] = new Array(n + 1).fill(0); // Array to store minimum cost to reach each step
+
+  // Base cases: Starting from step 0 or step 1 has no initial cost
+  dp[0] = 0;
+  dp[1] = 0;
+  /*
+  in this approach we are basically running a window on same size on each 
+  iteration we are moving one step forward ahead and adding and storing 
+  min among the previous two indexes of dp and input array
+  */ 
+
+  // Fill the dp array with the minimum cost for each step
+  for (let i = 2; i <= n; i++) {
+      dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+  }
+
+  // The last entry dp[n] gives the minimum cost to reach the top
+  return dp[n];
+}
+
+// Example usage:
+const costDP = [10, 15, 20];
+console.log(minCostClimbingStairsDP(costDP)); // Output: 15
