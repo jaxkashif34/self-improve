@@ -631,7 +631,7 @@ function invertTree(root: TreeNode | null): TreeNode | null {
   return root;
 }
 
-function replaceElements(arr: number[]): number[] {
+function replaceGreatestRightElements(arr: number[]): number[] {
   // Step 1: Initialize the current maximum to the last element in the array.
   // This will be used to track the largest value to the right of the current element.
   let current = arr[arr.length - 1];
@@ -660,7 +660,7 @@ function replaceElements(arr: number[]): number[] {
   return arr;
 }
 
-replaceElements([17, 18, 5, 4, 6, 1]); // [18,6,6,6,1,-1]
+replaceGreatestRightElements([17, 18, 5, 4, 6, 1]); // [18,6,6,6,1,-1]
 
 function mergeTrees(
   root1: TreeNode | null,
@@ -672,6 +672,10 @@ function mergeTrees(
   }
 
   // If one of the trees is empty, return the non-empty tree
+  /* In upper we check if both trees are empty :: if that's not the case then it means 
+  we know that one of them is empty and other is not empty so we'll check if root1 is empty
+  if it is then it means that root2 must not be empty and it has some value
+  */ 
   if (!root1) {
     return root2; // If root1 is null, we return root2 (no merge needed for null tree)
   }
@@ -694,20 +698,6 @@ function mergeTrees(
   // Return the new merged tree's root node
   return newRoot;
 }
-
-/**
- * Definition for a binary tree node.
- * class TreeNode {
- *     val: number;
- *     left: TreeNode | null;
- *     right: TreeNode | null;
- *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
- *         this.val = (val === undefined ? 0 : val);
- *         this.left = (left === undefined ? null : left);
- *         this.right = (right === undefined ? null : right);
- *     }
- * }
- */
 
 /**
  * This function finds the lowest common ancestor (LCA) of two given nodes `p` and `q`
@@ -1016,7 +1006,7 @@ removeElementsBad(
 function removeElements(head: ListNode | null, val: number): ListNode | null {
   // Create a dummy node to handle cases where head needs to be removed
   const dummy = new ListNode(0, head);
-  let current = dummy;
+  let current = dummy; // this works like a pointer on the dummy list
 
   // Traverse through the list
   while (current && current.next !== null) {
@@ -1184,13 +1174,12 @@ console.log(lengthOfLastWord("Hello World")); // Output: 5
 console.log(lengthOfLastWord("   fly me   to   the moon  ")); // Output: 4
 console.log(lengthOfLastWord("luffy is still joyboy")); // Output: 6
 
-
 /**
  * Removes all instances of `val` from the array `nums` and returns the new length.
- * 
+ *
  * This function modifies the array in-place by shifting non-val elements towards the beginning of the array.
  * The order of the remaining elements can be changed, and elements beyond the new length are irrelevant.
- * 
+ *
  * @param {number[]} nums - Array of numbers from which `val` needs to be removed.
  * @param {number} val - The value to be removed from the array.
  * @returns {number} - The new length of the array after removing all occurrences of `val`.
@@ -1201,16 +1190,16 @@ function removeElement(nums: number[], val: number): number {
 
   // Iterate through each element of the array with index `j`.
   for (let j = 0; j < nums.length; j++) {
-      // If the current element is not equal to `val`, it should be kept.
-      if (nums[j] !== val) {
-          // Place the current non-val element at the `i` position.
-          nums[i] = nums[j];
+    // If the current element is not equal to `val`, it should be kept.
+    if (nums[j] !== val) {
+      // Place the current non-val element at the `i` position.
+      nums[i] = nums[j];
 
-          // Increment `i` to prepare for the next non-val element.
-          i++;
-      }
+      // Increment `i` to prepare for the next non-val element.
+      i++;
+    }
 
-      // If the element is equal to `val`, it is skipped and not placed in the array.
+    // If the element is equal to `val`, it is skipped and not placed in the array.
   }
 
   // At the end of the loop, `i` will be the new length of the array without `val` elements.
@@ -1227,18 +1216,17 @@ let len2 = removeElement(nums2, 2);
 console.log(`New length after removal: ${len2}`); // Output: 5
 console.log(`Modified array: ${nums2.slice(0, len2)}`); // Output: [0, 1, 3, 0, 4]
 
-
 /**
  * Counts the number of unique email addresses after normalizing them.
- * 
+ *
  * Normalization steps:
  * 1. Any portion of the email local name after the '+' sign is ignored.
  * 2. Periods ('.') in the local name are ignored.
  * 3. The domain name remains unchanged.
- * 
+ *
  * For example, "test.email+alex@leetcode.com" and "testemail@leetcode.com"
  * will be considered the same unique email.
- * 
+ *
  * @param {string[]} emails - An array of email addresses.
  * @returns {number} - The count of unique email addresses after normalization.
  */
@@ -1247,17 +1235,17 @@ function numUniqueEmails(emails: string[]): number {
 
   // Loop through each email in the input array
   for (const email of emails) {
-      // Step 1: Split the email into local and domain parts based on '@'
-      let [local, domain] = email.split("@");
+    // Step 1: Split the email into local and domain parts based on '@'
+    let [local, domain] = email.split("@");
 
-      // Step 2: Ignore everything after the '+' in the local part
-      local = local.split("+")[0];
+    // Step 2: Ignore everything after the '+' in the local part
+    local = local.split("+")[0];
 
-      // Step 3: Remove all periods ('.') from the local part
-      local = local.replace(/\./g, "");
+    // Step 3: Remove all periods ('.') from the local part
+    local = local.replace(/\./g, "");
 
-      // Step 4: Reconstruct the email as "local@domain" and add it to the set
-      uniqueEmails.add(`${local}@${domain}`);
+    // Step 4: Reconstruct the email as "local@domain" and add it to the set
+    uniqueEmails.add(`${local}@${domain}`);
   }
 
   // The size of the set represents the number of unique email addresses
@@ -1268,22 +1256,17 @@ function numUniqueEmails(emails: string[]): number {
 const emails1 = [
   "test.email+alex@leetcode.com",
   "test.e.mail+bob.cathy@leetcode.com",
-  "testemail+david@lee.tcode.com"
+  "testemail+david@lee.tcode.com",
 ];
 
-const emails2 = [
-  "a@leetcode.com",
-  "b@leetcode.com",
-  "c@leetcode.com"
-];
+const emails2 = ["a@leetcode.com", "b@leetcode.com", "c@leetcode.com"];
 
 console.log(numUniqueEmails(emails1)); // Output: 2
 console.log(numUniqueEmails(emails2)); // Output: 3
 
-
 /**
  * Brute force solution to calculate the minimum cost to reach the top.
- * 
+ *
  * @param cost - Array of costs for each step.
  * @returns {number} - Minimum cost to reach the top.
  */
@@ -1292,11 +1275,11 @@ function minCostClimbingStairsBrute(cost: number[]): number {
 
   // Helper function to recursively calculate the cost to reach step i
   function findMinCost(i: number): number {
-      // Base cases: if i is beyond or at the last step
-      if (i >= n) return 0;
+    // Base cases: if i is beyond or at the last step
+    if (i >= n) return 0;
 
-      // Recursive calculation for the cost of reaching step i
-      return cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
+    // Recursive calculation for the cost of reaching step i
+    return cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
   }
 
   // You can either start from step 0 or step 1
@@ -1307,10 +1290,9 @@ function minCostClimbingStairsBrute(cost: number[]): number {
 const costBrute = [10, 15, 20];
 console.log(minCostClimbingStairsBrute(costBrute)); // Output: 15
 
-
 /**
  * Memoization solution to calculate the minimum cost to reach the top.
- * 
+ *
  * @param cost - Array of costs for each step.
  * @returns {number} - Minimum cost to reach the top.
  */
@@ -1320,15 +1302,15 @@ function minCostClimbingStairsMemo(cost: number[]): number {
 
   // Helper function to calculate the cost of reaching step i
   function findMinCost(i: number): number {
-      // Base case: If we are at or beyond the last step
-      if (i >= n) return 0;
+    // Base case: If we are at or beyond the last step
+    if (i >= n) return 0;
 
-      // If the result is already computed, return it
-      if (memo[i] !== -1) return memo[i];
+    // If the result is already computed, return it
+    if (memo[i] !== -1) return memo[i];
 
-      // Recursive computation and store the result in memo array
-      memo[i] = cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
-      return memo[i];
+    // Recursive computation and store the result in memo array
+    memo[i] = cost[i] + Math.min(findMinCost(i + 1), findMinCost(i + 2));
+    return memo[i];
   }
 
   // Start from either step 0 or step 1
@@ -1339,10 +1321,9 @@ function minCostClimbingStairsMemo(cost: number[]): number {
 const costMemo = [10, 15, 20];
 console.log(minCostClimbingStairsMemo(costMemo)); // Output: 15
 
-
 /**
  * Dynamic programming solution to calculate the minimum cost to reach the top.
- * 
+ *
  * @param cost - Array of costs for each step.
  * @returns {number} - Minimum cost to reach the top.
  */
@@ -1357,11 +1338,11 @@ function minCostClimbingStairsDP(cost: number[]): number {
   in this approach we are basically running a window on same size on each 
   iteration we are moving one step forward ahead and adding and storing 
   min among the previous two indexes of dp and input array
-  */ 
+  */
 
   // Fill the dp array with the minimum cost for each step
   for (let i = 2; i <= n; i++) {
-      dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+    dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
   }
 
   // The last entry dp[n] gives the minimum cost to reach the top
@@ -1371,3 +1352,44 @@ function minCostClimbingStairsDP(cost: number[]): number {
 // Example usage:
 const costDP = [10, 15, 20];
 console.log(minCostClimbingStairsDP(costDP)); // Output: 15
+
+/**
+ * Function to calculate the Hamming weight (number of 1 bits) of a given integer.
+ *
+ * @param n - The input number whose Hamming weight is to be calculated.
+ * @returns The Hamming weight (number of 1 bits) of the input number.
+ */
+function hammingWeight(n: number): number {
+  // Initialize a variable 'count' to store the number of 1 bits found in 'n'.
+  let count = 0;
+  /* Subtracting 1 from n: When you subtract 1 from a binary number, it affects the 
+    least significant 1 (LEASE SIGNIFICANT 1 BIT) bit and all bits to the right of it. For example:
+
+    If n = 12 (which is 1100 in binary), then n - 1 = 11 (which is 1011 in binary).
+    Here’s the key observation: the operation will flip the least significant 1 bit 
+    of n to 0 and all bits to the right of it will become 1. Thus:
+        Before: n = 1100
+        After n - 1: n - 1 = 1011
+        Now, applying n & (n - 1):
+            1100 & 1011 = 1000 (the least significant 1 bit is cleared).
+
+    As a result, each time you perform n &= (n - 1), you effectively remove one 1 bit from n.
+  */
+
+  // Continue looping until 'n' becomes 0.
+  while (n > 0) {
+    // This operation clears the least significant 1 bit from 'n'.
+    // The expression 'n & (n - 1)' takes 'n' and subtracts 1 from it.
+    // The result has all bits unchanged up to the least significant 1 bit.
+    // The least significant 1 bit in 'n' becomes 0 after this operation.
+    n &= n - 1;
+
+    // Each time we perform the above operation, we have found a 1 bit.
+    // Increment the count of 1 bits.
+    count += 1;
+  }
+
+  // After all bits are processed and 'n' is reduced to 0,
+  // return the total count of 1 bits found in the original number.
+  return count;
+}

@@ -62,7 +62,7 @@ const isPower2ByBitShifting = (n: number) => {
   let add = 1;
   while (add <= n) {
     count += n & add ? 1 : 0;
-    add <<= 1; // by doing left shifting we are incrementing the add variable by 2 (e.g 1 << 1 = 2, 2 << 1 = 4, 4 << 1 = 8, 8 << 1 = 16)
+    add <<= 1; // by doing left shifting we are doubling the add variable by 2 (e.g 1 << 1 = 2, 2 << 1 = 4, 4 << 1 = 8, 8 << 1 = 16)
   }
   return count === 1;
 };
