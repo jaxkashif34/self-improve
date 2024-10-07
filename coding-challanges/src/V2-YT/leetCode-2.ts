@@ -228,6 +228,9 @@ if the numbers are from 1 to N and no number is missing this is the best algo fo
 */
 // basic implementations
 const cyclicSort = (arr: number[]) => {
+  /* Main DrawBack if fist number is already it correct 
+  position it will not even starts the loop
+  */
   let p = 0;
   while (arr[p] - 1 !== p) {
     let a = arr[p];
@@ -1393,3 +1396,105 @@ function hammingWeight(n: number): number {
   // return the total count of 1 bits found in the original number.
   return count;
 }
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number
+ *     left: TreeNode | null
+ *     right: TreeNode | null
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.left = (left===undefined ? null : left)
+ *         this.right = (right===undefined ? null : right)
+ *     }
+ * }
+ */
+
+function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
+  // If subRoot is null, it's always a subtree
+  if (!subRoot) return true;
+
+  // If root is null but subRoot isn't, it's not a subtree
+  if (!root) return false;
+
+  // Helper function to check if two trees are identical
+  const isSameTree = (
+    node1: TreeNode | null,
+    node2: TreeNode | null
+  ): boolean => {
+    if (!node1 && !node2) return true; // Both trees are empty
+    if (!node1 || !node2) return false; // One tree is empty, the other isn't
+
+    // Check if current nodes are identical and recurse on both left and right subtrees
+    return (
+      node1.val === node2.val &&
+      isSameTree(node1.left, node2.left) &&
+      isSameTree(node1.right, node2.right)
+    );
+  };
+
+  // Recursive check: if the current tree matches, return true
+  // Otherwise, check the left and right subtrees
+  return (
+    isSameTree(root, subRoot) ||
+    isSubtree(root.left, subRoot) ||
+    isSubtree(root.right, subRoot)
+  );
+}
+
+function isPalindrome(s: string): boolean {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const aNString = s.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+  // Loop to check if the string is a palindrome
+  for (let i = 0; i < Math.floor(aNString.length / 2); i++) {
+    // Compare characters from both ends
+    if (aNString[i] !== aNString[aNString.length - 1 - i]) {
+      return false; // Not a palindrome
+    }
+  }
+
+  return true; // String is a palindrome
+}
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
+console.log(isPalindrome("race a car")); // Output: false
+
+function isIsomorphic(s: string, t: string): boolean {
+  if (s.length !== t.length) return false; // Strings of different lengths can't be isomorphic
+
+  const mapST = new Map<string, string>(); // Map for s -> t
+  const mapTS = new Map<string, string>(); // Map for t -> s
+
+  for (let i = 0; i < s.length; i++) {
+    const sChar = s[i];
+    const tChar = t[i];
+
+    // Check s -> t mapping
+    if (mapST.has(sChar)) {
+      if (mapST.get(sChar) !== tChar) {
+        return false; // Mismatch in expected mapping
+      }
+    } else {
+      mapST.set(sChar, tChar);
+    }
+
+    // Check t -> s mapping (to ensure one-to-one correspondence)
+    if (mapTS.has(tChar)) {
+      if (mapTS.get(tChar) !== sChar) {
+        return false; // Mismatch in reverse mapping
+      }
+    } else {
+      mapTS.set(tChar, sChar);
+    }
+  }
+
+  return true; // Strings are isomorphic
+}
+
+// Example usage:
+console.log(isIsomorphic("egg", "add")); // Output: true
+console.log(isIsomorphic("foo", "bar")); // Output: false
+console.log(isIsomorphic("paper", "title")); // Output: true

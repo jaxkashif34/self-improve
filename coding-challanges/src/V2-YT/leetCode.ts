@@ -997,7 +997,7 @@ const isValidSudoku = (board: string[][]) => {
           one think i noticed in these type of calculation like calculating the cell 
           number or box number or something like that what we do is we multiply the 
           number of cells in row wise with "row" and then add current col into it this 
-          will give us the exact cell number and same case with columns also it might be wrong
+          will give us the exact cell number and same case with columns
           see we have 3 (in row wise) x 3 (in col wise) = 9 sub-grids
           so in order to traverse through the rows of entire board we have 9 boxes in each row
           if we divide 9 by 3 (because 3 sub-grids in row wise) we can get 3 subRows ~9 boxes (row wise)
@@ -1358,6 +1358,15 @@ class LRUCache {
       LRU and MRU remove method remove the node from the list and setHead will again 
       add it to the front
       */
+
+      /*
+      By always removing a node from its current position (if it exists) and then 
+      inserting it at the front, we ensure that the most recently accessed or added 
+      node is always at the head.
+      The least recently used node stays at the tail because it hasn’t been accessed 
+      or updated in a while, and   as other nodes move to the front, the LRU node 
+      stays at the back.
+      */
       this.remove(node);
       this.setHead(node);
       return node.value;
@@ -1403,9 +1412,17 @@ class LRUCache {
     consider head pointer will point to the most recently used node and tail pointer will
     point to the least recently used node then it will a lot more easier to understand
     */
+
+    /* Since it is a doubly linked list so we have to deal it with both pointers
+    first with the node pointer and second with the head pointer and in this 
+    approach head will point to the most recently used and tail will point at least
+    recently used
+    */
     node.next = this.head;
     node.prev = null;
-    // in-order to connect the existing node with the new node we have to add this line
+    /* in-order to connect the existing node with the new node we have to add this line
+    since it is a doubly linked list so we have to connect a node from both side
+    */
     if (this.head) this.head.prev = node;
     this.head = node;
 
@@ -1423,6 +1440,18 @@ class LRUCache {
       pointer will set to null (because we are removing the currentNode)
     2) if the passing node is MRU set it to LRU (and in this case the MRU is tail pointer 
       and LRU is head pointer) and vice versa
+    */
+
+    /* so we know that we are working with doubly linked list so then we have to take care
+    of both sides of the node we know that each node left's side we have prev and also on 
+    same side we have head so we'll have to check if on left side do have any node or not
+    by checking node.prev so if node exists it's means we are removing the a node that is 
+    not head so in that case we just need to connect the prev node to the right side node
+    of current node and if we are removing the head node then in that case we only have to
+    move the head to right side by node.next
+    
+    and same process goes for node.next for (right side)
+    
     */
     if (node.prev) {
       /* one more thing is that we are assigning the node.nex in either if or else block 
@@ -1486,6 +1515,18 @@ const permute = (
     answer.push([...permutation]);
   }
 
+  /*
+Start: nums = [1, 2, 3], permutation = []
+- Choose 1: permutation = [1], remaining nums = [2, 3]
+  - Choose 2: permutation = [1, 2], remaining nums = [3]
+    - Choose 3: permutation = [1, 2, 3], remaining nums = []
+      - Base case reached, push [1, 2, 3] to answer
+    - Backtrack (pop 3): permutation = [1, 2]
+  - Backtrack (pop 2): permutation = [1]
+  - Choose 3: permutation = [1, 3], remaining nums = [2]
+    - Continue recursively...
+*/
+
   for (let i = 0; i < nums.length; i++) {
     /* in the first loop we have num.length 3 in next we have 2 then 1 cuz we are filtering it ans 
     passing reaming choices
@@ -1530,41 +1571,58 @@ class TreeNode {
 // Space Complexity : O(1)
 // Detailed Explanation can be found on PDF (page 44-45)
 // Video Explanation : https://youtu.be/fow18kktPMM?list=PL8EhujvLdk7WuGPfsDpE8jQMwv7I2YitK&t=684
+// Function to perform in-order traversal of a binary tree without using recursion or stack (Morris Traversal)
 const inOrderTraversal = (root: TreeNode | null) => {
+  // Start by setting 'current' to the root of the tree
   let current = root;
-  const answer = [];
+  const answer: number[] = []; // Array to store the in-order traversal values
+
+  // Loop through the tree while there are still nodes to visit
   while (current) {
+    // Case 1: If the current node has no left child, process the current node and move to the right child
     if (!current.left) {
-      /* predecessor meaning = a person who held a job or office before the current holder.
-      at first iteration when left is not null we go in the else block and in there we find 
-      the predecessor (3 in this case ) and set 3-node.right to current node (root not) at 
-      pushing 3 since we already set 3.right to root so we again come back to root and check 
-      if the left is null or not since it is not so we will again come back to the else block 
-      and find the predecessor and check if the predecessor.right is null or not since at 
-      second time it is not we we will re-assigned the current to current.right telling it to 
-      go to the right side of the tree
-      */
+      // We can safely add the current node's value to the result, as there's no left subtree
       answer.push(current.val);
+
+      // Move to the right subtree (next node in the in-order sequence)
       current = current.right;
-    } else {
-      let predecessor = current.left; // starts with left then move right to the leaf node
+    }
+    // Case 2: If there is a left child, we need to find the in-order predecessor
+    else {
+      // Start by setting the predecessor to the left child of the current node
+      let predecessor = current.left;
+
+      // Find the rightmost node in the left subtree (predecessor) that isn't yet linked to the current node
+      // The condition "predecessor.right !== current" ensures that we don't create an infinite loop
+      // It's used to determine if we already linked the predecessor to the current node in a previous step
       while (predecessor.right && predecessor.right !== current) {
-        // Question : can you help me to understand why we need this condition predecessor.right !== current with example ?
-        // Answer : because
-        predecessor = predecessor.right;
+        predecessor = predecessor.right; // Move to the rightmost node in the left subtree
       }
+
+      // Case 2a: If the predecessor's right pointer is null, it means we haven't threaded this node yet
       if (!predecessor.right) {
-        // if thread is not created
+        // Create a temporary link (thread) from the predecessor to the current node
         predecessor.right = current;
-        // answer.push(current.val); // for preOrder
-        current = current.left; // move current to the lower left side
-      } else {
+
+        // Move to the left subtree to continue the traversal
+        current = current.left;
+      }
+      // Case 2b: If the predecessor's right pointer is already pointing to the current node,
+      // it means we've already processed the left subtree, so we need to remove the thread and move on
+      else {
+        // Remove the thread to restore the original tree structure
         predecessor.right = null;
-        answer.push(current.val); // for preOrder Traversal we just need to push the current.val before we set the predecessor.right to null (means remove this line from here and paste it in the if block after setting predecessor.right to current)
-        current = current.right; // we assign current to current.right because we already visited the left side of the tree or sub-tree so now we need to visit the right side of the tree
+
+        // Process the current node's value (this happens after visiting the left subtree)
+        answer.push(current.val);
+
+        // Move to the right subtree, as we have already visited the left subtree
+        current = current.right;
       }
     }
   }
+
+  // After traversing the entire tree, return the collected values in in-order
   return answer;
 };
 
@@ -1576,77 +1634,73 @@ inOrderTraversal(root);
 
 // Best Time to Buy and Sell Stocks Problem (With Brute Force Approach)
 
-const getProfit = (prices: number[]) => {
-  let buyPriceIndex = 0;
-  for (let i = 0; i < prices.length - 1; i++) {
-    // first of all we are finding the minimum price in the array
-    if (prices[i] < prices[buyPriceIndex]) {
-      buyPriceIndex = i;
+function getProfit(prices: number[]): number {
+  // Edge case: If there's less than 2 days, no transaction can be made.
+  if (prices.length < 2) return 0;
+
+  let minPrice = prices[0]; // Start with the first price as the minimum buying price
+  let maxProfit = 0; // Initialize max profit to 0
+
+  // Loop through prices starting from the second day
+  for (let i = 1; i < prices.length; i++) {
+    const currentPrice = prices[i];
+
+    // Check if selling on day `i` yields a better profit
+    const currentProfit = currentPrice - minPrice;
+    if (currentProfit > maxProfit) {
+      maxProfit = currentProfit;
+    }
+
+    // Update the minimum buying price if a lower price is found
+    /* we are checking for minPrice here because in all the cases 
+    we are subtracting minPrice from the next'th index so that will
+    always be behind of currentPrice
+    */ 
+    if (currentPrice < minPrice) {
+      minPrice = currentPrice;
     }
   }
-  let maxProfitDayIndex = buyPriceIndex;
-  for (let j = maxProfitDayIndex; j < prices.length; j++) {
-    if (prices[j] > prices[maxProfitDayIndex]) {
-      maxProfitDayIndex = j;
-    }
-  }
-  return prices[maxProfitDayIndex] - prices[buyPriceIndex];
-};
+
+  return maxProfit; // Return the maximum profit found
+}
 
 getProfit([7, 1, 5, 3, 6, 4]);
-
-const getProfit_pt2 = (prices: number[]) => {
-  let minBuyPrice = prices[0];
-  let max = 0;
-
-  for (let i = 1; i < prices.length; i++) {
-    const sellPrice = prices[i];
-    const profit = sellPrice - minBuyPrice;
-
-    /*
-    we are countering the scenario of accidentally picking the sell date before the buy date 
-    is we actually storing the max value in max variable for example if we pick 7 as buy date
-    and 1 as sell date then the profit will be -6 and -6 is not a profit it is actually a loss 
-    */
-
-    /* get the maximum value from the array
-    not just simply get the maximum value from the array if we do this there might 
-    be a chance of picking the sell date first and buy date later after the sell 
-    date which is wrong so the trick here is to first get the profit (which is 
-    calculate by subtracting the prices[i] value from the first value) and then 
-    compare it with the max variable
-    */
-    max = Math.max(max, profit);
-
-    /* basically get the min value from the prices array
-    by comparing the first value from the array and the rest of them if we find a min 
-    value then the first value in the array update the minBuyPrice value
-    */
-    minBuyPrice = Math.min(minBuyPrice, sellPrice);
-  }
-  return max;
-};
-
-getProfit_pt2([7, 1, 5, 3, 6, 4]);
 
 // Time Complexity : O(N)
 // Space Complexity : O(1)
 // Detailed Explanation can be found on PDF (page 53-54)
 // sliding window technique
-const getProfitWithTwoPointers = (prices: number[]) => {
-  let left = 0;
-  let right = 1;
-  let max = 0;
+const getProfitWithTwoPointers = (prices: number[]): number => {
+  // Initialize two pointers: 
+  // 'left' represents the buying day, 
+  // 'right' represents the selling day
+  let left = 0; // Start with the first day as the buying day
+  let right = 1; // Start with the second day as the selling day
+  let max = 0; // Initialize the max profit to 0
+
+  // Iterate through the prices while 'right' pointer is within bounds
   while (right < prices.length) {
+    // If the price at the 'left' pointer (buy price) is less than at the 'right' (sell price),
+    // it means there's a profit opportunity
     if (prices[left] < prices[right]) {
-      max = Math.max(max, prices[right] - prices[left]);
+      // Calculate the profit for this pair (buying at 'left' and selling at 'right')
+      const currentProfit = prices[right] - prices[left];
+      // Update max profit if this profit is greater than the current max
+      max = Math.max(max, currentProfit);
     } else {
+      // If the price at 'left' is not smaller than at 'right' (i.e. no profit opportunity),
+      // move the 'left' pointer to the 'right' pointer's position
+      // This means we consider buying at the new 'right' pointer's day moving forward
       left = right;
     }
+    // Move the 'right' pointer one step forward to check the next selling day
     right++;
   }
+
+  // Return the maximum profit found
   return max;
 };
+
 
 getProfitWithTwoPointers([7, 1, 5, 3, 6, 4]);
 
@@ -1760,10 +1814,31 @@ const buildPattern = (substring: string): number[] => {
       } else {
         // If characters don't match but we have a matched prefix, fallback to the previous prefix length
         /*
-        We are comparing two characters from the main string (string[i]) and the substring 
+        We are comparing two characters from the substring (substring[j]) and the substring 
         (substring[j]), and they do not match.
         However, we've already successfully matched some characters of the substring before 
         this mismatch (i.e., j > 0).
+
+        the reason we are falling back j to the pattern[j - 1] is that if we are here
+        it means some string matched cuz j !== 0 (cuz we are in else of j === 0) 
+        && substring[j] !== substring[i] so it means that substring[j - 1] will 
+        definitely match in the previous string and there is prefix that is suffix
+        and we have passed that (cuz we are at j and we are talking about j - 1)
+        so we will not going to start from 0 instead we start from patter[j - 1]
+        which is right next to the prefix if pattern[j - 1] !== 0 and if 
+        pattern[j - 1] === 0 it means there is no suffix that is prefix so we will
+        start from 0 which is base position of j 
+        hope fully it helps to understand of future myself and if not 
+        watch this video https://youtu.be/GTJr8OvyEVQ?t=126 
+        */ 
+
+        /*
+        Thus, if pattern[i] = x, this means:
+
+          There is a prefix of length x that starts at index 0. (prefix will always starts at 0)
+          There is a suffix of length x that ends at index (i).
+          So, the prefix starts at index (0) and ends at index (x-1), 
+          while the suffix ends at index (i) and starts at index (i - x + 1)
         */ 
         j = pattern[j - 1]; // Fall back in the pattern table
       }
