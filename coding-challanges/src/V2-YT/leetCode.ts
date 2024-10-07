@@ -1,4 +1,4 @@
-export { };
+export {};
 
 // valid parentheses
 
@@ -763,12 +763,12 @@ const subsetWithBinarySolution = (array: number[]) => {
     const binaryString = strV.padStart(array.length, "0"); // 000, 001, 010, 011, 100, 101, 110, 111
     const subset = [];
     // 000,
-    // 001, 
-    // 010, 
-    // 011, 
-    // 100, 
-    // 101, 
-    // 110, 
+    // 001,
+    // 010,
+    // 011,
+    // 100,
+    // 101,
+    // 110,
     // 111
     // we can clearly see that each of them are unique
 
@@ -812,10 +812,10 @@ const subsetWithBFSWithOutShift = (array: number[]) => {
   const result = [];
   const queue: [number[], number][] = [];
   queue.push([[], 0]);
-  let queueP = 0
+  let queueP = 0;
   while (queue.length > queueP) {
-    const [current, index] = queue[queueP]
-    queueP += 1
+    const [current, index] = queue[queueP];
+    queueP += 1;
     result.push(current);
     for (let i = index; i < array.length; i++) {
       queue.push([[...current, array[i]], i + 1]);
@@ -1710,54 +1710,105 @@ not match this is pretty annoying so in that case KMP is useful
 in that case the time complexity of the brute force solution will be O(n*m) and the time complexity
 of the KMP will be O(n + m) so KMP is better in that case
 */
-const strStr_pt2 = (string: string, substring: string) => {
+// Main function to find the index of the first occurrence of the substring in the main string
+const strStr_pt2 = (string: string, substring: string): number => {
+  // If the substring is empty, return 0 (by convention, empty substring is found at the start)
   if (substring === "") return 0;
+
+  // Build the pattern (KMP prefix table) for the substring
   const pattern = buildPattern(substring);
+
+  // Check if the substring matches the main string using the pattern
   return doesMatch(string, substring, pattern);
 };
 
+// Function to build the pattern (also known as prefix table) for the substring using KMP algorithm
 const buildPattern = (substring: string): number[] => {
-  const pattern = new Array(substring.length).fill(0)
-  let j = 0
-  let i = 1
+  // Initialize the pattern array with 0s. Length matches the length of the substring.
+  const pattern = new Array(substring.length).fill(0);
 
+  // 'j' is the length of the longest proper prefix which is also a suffix
+  let j = 0;
+
+  // 'i' is the current character being checked, starting from the second character (index 1)
+  let i = 1;
+
+  // Loop through the substring to build the pattern
   while (i < substring.length) {
+    // If characters match, update the pattern and move both pointers forward
     if (substring[j] === substring[i]) {
-      pattern[i] = j + 1
-      i += 1
-      j += 1
+      /*
+      Compare substring[3] (a) and substring[0] (a). This does match! This means 
+      the first character of the substring matches a suffix at index 3, so 
+      pattern[3] = 1 (the length of the matched prefix is 1).
+      Move i to i = 4. Now, compare substring[4] (b) and substring[1] (b). This 
+      also matches! So the matched prefix extends, and pattern[4] = 2 
+      (the length of the matched prefix is 2)
+
+      The prefix that matches the suffix is always at the start of the substring, 
+      and the suffix that matches it is always at the end of the substring, 
+      ending at index i.
+      */ 
+      pattern[i] = j + 1; // Store the length of the matched prefix
+      i += 1; // Move to the next character
+      j += 1; // Extend the matched prefix length
     } else {
+      // If characters don't match and 'j' is at the beginning, move 'i' to the next character
       if (j === 0) {
-        pattern[i] = 0
-        i += 1
+        pattern[i] = 0; // No match, so store 0
+        i += 1; // Move to the next character
       } else {
-        j = pattern[j - 1]
+        // If characters don't match but we have a matched prefix, fallback to the previous prefix length
+        /*
+        We are comparing two characters from the main string (string[i]) and the substring 
+        (substring[j]), and they do not match.
+        However, we've already successfully matched some characters of the substring before 
+        this mismatch (i.e., j > 0).
+        */ 
+        j = pattern[j - 1]; // Fall back in the pattern table
       }
     }
   }
-  return pattern
+
+  // Return the built pattern (prefix table)
+  return pattern;
 };
 
-const doesMatch = (string: string, substring: string, pattern: number[]): number => {
-  let i = 0 // move on main string
-  let j = 0 // will move substring
-  // abxabcabcaby abcaby
+// Function to check if the substring matches any part of the main string using KMP algorithm
+const doesMatch = (
+  string: string,
+  substring: string,
+  pattern: number[]
+): number => {
+  let i = 0; // 'i' is the index for the main string
+  let j = 0; // 'j' is the index for the substring
+
+  // Loop through the main string
   while (i < string.length) {
+    // If characters match, move both 'i' and 'j' forward
     if (string[i] === substring[j]) {
-      i += 1
-      j += 1
+      i += 1;
+      j += 1;
     } else {
+      // If characters don't match and 'j' is at the beginning, just move 'i' forward
       if (j === 0) {
-        i += 1
+        i += 1;
       } else {
-        j = pattern[j - 1]
+        // If characters don't match, but there's a matched prefix, use the pattern to skip comparisons
+        j = pattern[j - 1]; // Jump back in the substring using the pattern table
       }
     }
+
+    // If we reach the end of the substring, a match is found
     if (j === substring.length) {
-      return i - substring.length
+      // Return the index where the substring starts in the main string
+      return i - substring.length;
     }
   }
-  return -1
+
+  // If no match is found, return -1
+  return -1;
 };
 
-strStr_pt2('abxabcabcaby', 'abcaby')
+// Example usage of the function
+strStr_pt2("abxabcabcaby", "abcaby"); // This should return the index 6 (where 'abcaby' starts in 'abxabcabcaby')
