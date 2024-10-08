@@ -1,4 +1,4 @@
-import { LinkedList } from '../YT/DSA/LinkedList/linkedList';
+import { LinkedList } from "../YT/DSA/LinkedList/linkedList";
 export {};
 const list = new LinkedList<number>();
 
@@ -83,13 +83,16 @@ class LinkedList2<T extends number> extends LinkedList<T> {
 
       const sum = value1 + value2 + carry;
 
-      carry = Math.floor(sum / 10) /* can also be written as  sum > 9 ? 1 : 0  but this only works if sum is less then 20 */; 
+      carry = Math.floor(sum / 10);
       /* this carry will add up in the next iteration (next iteration) of numbers
-    
-      // we are dividing sum with 10 because if the sum number is greater then 10 then only if 
-      will go to carry
-      // and like this is how we generate a carry like if sum is 14 dividing it with 10 will 
-      output 1.something by doing Math.floor it will round up to 1 so this is exact carry of 14
+
+      ############ SIMPLE RULE ############
+
+      when we divide any number > 10 it will simply remove the last digit and provide us the
+      left part if we do floor(14/10) -> 1 you see when we divide 14 with 10 it removes the 0
+      (last digit) and give us remaining same if we do floor(54/10)-> 5 it works with any
+      number like some random number floor(423/10)-> 423 and if we divide any number with 100
+      it will start removing last 2 digits
 
       //    1 ----> carry
       // 1  2   7
@@ -104,9 +107,15 @@ class LinkedList2<T extends number> extends LinkedList<T> {
       const digit = sum % 10; // digit will be add the node value
       // digit is the single digit value
       // modulus is basically the value left behind after a number is divide un-completely
-      /* we are getting digit value by taking modulus cuz modulus will give us the left-over 
+      /*
+      we are getting digit value by taking modulus cuz modulus will give us the left-over 
       value behind by dividing it to the provided number (10 ITC) and digit will then added 
       to the node representing the single digit of the total sum number
+
+      ############ SIMPLE RULE ############
+      like when we divide any number > 10 will deduct the last digit and gives us the
+      part before the last digit but in modulus it will only gives us the last digit
+      if the number is (643 % 10)-> 3 it will always works like that 
       */
 
       summedList.append(digit);
